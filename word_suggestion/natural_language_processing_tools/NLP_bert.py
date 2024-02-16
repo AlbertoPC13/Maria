@@ -1,6 +1,8 @@
 from .NLP import NLP
-from transformers import AutoTokenizer, AutoModelForMaskedLM
-import torch
+import urllib.request
+import json
+import os
+import ssl
 
 class NLP_bert(NLP):
     def __init__(self):
@@ -32,60 +34,38 @@ class NLP_bert(NLP):
         return normalized_sentence
 
     def suggest_next_word(self,normalized_sentence):
-        tokenizer, model = self.load_bert_model()
-        tokens ,input_ids = self.tokenize_sentence_with_bert(tokenizer,normalized_sentence)
-        tensor = self.convert_input_ids_to_tensor(input_ids)
-        output = self.get_output_from_bert_model(model,tensor)
-        mask_index = self.get_mask_index(tokens)
-        output_mask = self.get_output_for_mask(output,mask_index)
-        probabilities = self.apply_softmax_to_output(output_mask)
-        top_probabilities, top_indexes = self.get_top_probabilities_and_indexes(probabilities)
-        top_tokens = self.convert_indexes_to_tokens(tokenizer,top_indexes)
-        suggested_words= self.get_suggested_words(top_tokens,top_probabilities)
+        suggested_words = self.predict_with_bert(normalized_sentence)
         return suggested_words
-    
-    def load_bert_model(self):
-        tokenizer = AutoTokenizer.from_pretrained("dccuchile/bert-base-spanish-wwm-cased")
-        model = AutoModelForMaskedLM.from_pretrained("dccuchile/bert-base-spanish-wwm-cased")
-        return tokenizer, model
 
-    def tokenize_sentence_with_bert(self,tokenizer,normalized_sentence):
-        tokens = tokenizer.tokenize(normalized_sentence)
-        input_ids = tokenizer.convert_tokens_to_ids(tokens)
-        return tokens, input_ids
-    
-    def convert_input_ids_to_tensor(self,input_ids):
-        tensor = torch.tensor([input_ids])
-        return tensor
-    
-    def get_output_from_bert_model(self,model,tensor):
-        output = model(tensor)
-        return output
-    
-    def get_mask_index(self,tokens):
-        mask_index = tokens.index("[MASK]")
-        return mask_index
-    
-    def get_output_for_mask(self,output,mask_index):
-        output_mask = output[0][0][mask_index]
-        return output_mask
-    
-    def apply_softmax_to_output(self,output_mask):
-        probabilities = torch.nn.functional.softmax(output_mask, dim=0)
-        return probabilities
-    
-    def get_top_probabilities_and_indexes(self,probabilities):
-        top_probabilities, top_indexes = torch.topk(probabilities, 5)
-        return top_probabilities, top_indexes
-    
-    def convert_indexes_to_tokens(self,tokenizer,top_indexes):
-        top_tokens = tokenizer.convert_ids_to_tokens(top_indexes)
-        return top_tokens
-    
-    def get_suggested_words(self,top_tokens,top_probabilities):
-        suggested_words = []
-        for token, prob in zip(top_tokens, top_probabilities):
-            if token == "[UNK]":
-                continue
-            suggested_words.append((str(token),str(prob.item())))
-        return suggested_words
+    def allowSelfSignedHttps(self,allowed):
+        # bypass the server certificate verification on client side
+        if allowed and not os.environ.get('PYTHONHTTPSVERIFY', '') and getattr(ssl, '_create_unverified_context', None):
+            ssl._create_default_https_context = ssl._create_unverified_context
+
+    def predict_with_bert(self,normalized_sentence):
+        self.allowSelfSignedHttps(True) # this line is needed if you use self-signed certificate in your scoring service.
+
+        url = os.environ.get('BERT_ENDPOINT')
+        api_key = os.environ.get('BERT_API_KEY')
+
+        data = { "inputs": normalized_sentence }       
+        body = str.encode(json.dumps(data))
+
+        headers = {'Content-Type':'application/json', 'Authorization':('Bearer '+ api_key), 'azureml-model-deployment': 'dccuchile-bert-base-spanish--12' }
+
+        request = urllib.request.Request(url, body, headers)
+
+        try:
+            response = urllib.request.urlopen(request)
+
+            result = response.read()
+            decoded_result = json.loads(result)
+            suggested_words = [(item['token_str'],item['score']) for item in decoded_result]
+            
+            return suggested_words
+        except urllib.error.HTTPError as error:
+            print("The request failed with status code: " + str(error.code))
+
+            # Print the headers - they include the requert ID and the timestamp, which are useful for debugging the failure
+            print(error.info())
+            print(error.read().decode("utf8", 'ignore'))
