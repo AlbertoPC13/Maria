@@ -1,4 +1,4 @@
-# Word-suggestion
+# Maria
 
 This project is a word suggestion micro service module developed for the Prototype tool to support the initial stage of learning to write in the Spanish language.
 
