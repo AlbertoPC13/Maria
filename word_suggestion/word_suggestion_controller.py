@@ -1,5 +1,3 @@
-from typing import Tuple
-
 from flask import Blueprint, jsonify, Response
 from .word_suggestion_service import WordSuggestionService
 
