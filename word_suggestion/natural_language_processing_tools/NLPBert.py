@@ -10,13 +10,20 @@ class NLPBert(NLP):
         self.normalizer = NormalizerBert()
         self.word_suggester = WordSuggesterBert()
 
-    def add_mask_to_sentence(self, sentence: str) -> str:
-        sentence_with_mask = sentence + " [MASK]"
-        return sentence_with_mask
+    def suggest_next_word(self, normalized_tokens: list) -> list:
+        normalized_sentence = self.recover_sentence_from_tokens(normalized_tokens)
+        masked_sentence = self.add_mask_to_sentence(normalized_sentence)
+        print(masked_sentence)
+        suggested_words = self.word_suggester.suggest_next_word(masked_sentence)
+        return suggested_words
 
     def recover_sentence_from_tokens(self, tokens: list) -> str:
         sentence = " ".join(tokens)
         return sentence
+
+    def add_mask_to_sentence(self, sentence: str) -> str:
+        sentence_with_mask = sentence + " [MASK]"
+        return sentence_with_mask
 
     def tokenize_sentence(self, sentence: str) -> list:
         tokenized_sentence = self.tokenizer.tokenize_sentence_by_words(sentence)
@@ -25,10 +32,3 @@ class NLPBert(NLP):
     def normalize_tokens(self, tokenized_sentence: list) -> list:
         normalized_tokens = self.normalizer.normalize_tokens(tokenized_sentence)
         return normalized_tokens
-
-    def suggest_next_word(self, normalized_tokens: list) -> list:
-        normalized_sentence = self.recover_sentence_from_tokens(normalized_tokens)
-        masked_sentence = self.add_mask_to_sentence(normalized_sentence)
-        print(masked_sentence)
-        suggested_words = self.word_suggester.suggest_next_word(masked_sentence)
-        return suggested_words
