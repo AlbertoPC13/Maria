@@ -11,7 +11,8 @@ class NormalizerBert(Normalizer):
         normalized_tokens = self.normalize_lowercase_tokens(lowercase_tokens)
         return normalized_tokens
 
-    def transform_tokens_to_lowercase(self, tokenized_sentence: list) -> list:
+    @staticmethod
+    def transform_tokens_to_lowercase(tokenized_sentence: list) -> list:
         lowercase_tokens = [token.lower() for token in tokenized_sentence]
         return lowercase_tokens
 
