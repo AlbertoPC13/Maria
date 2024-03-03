@@ -18,12 +18,12 @@ class NLPBert(NLP):
         return suggested_words
 
     @staticmethod
-    def recover_sentence_from_tokens(self, tokens: list) -> str:
+    def recover_sentence_from_tokens(tokens: list) -> str:
         sentence = " ".join(tokens)
         return sentence
 
     @staticmethod
-    def add_mask_to_sentence(self, sentence: str) -> str:
+    def add_mask_to_sentence(sentence: str) -> str:
         sentence_with_mask = sentence + " [MASK]"
         return sentence_with_mask
 
