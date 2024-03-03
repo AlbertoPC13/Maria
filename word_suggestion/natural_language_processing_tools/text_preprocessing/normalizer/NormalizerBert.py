@@ -3,8 +3,12 @@ from .Normalizer import Normalizer
 
 class NormalizerBert(Normalizer):
     def __init__(self):
-        self.ALPHABET = {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "ñ", "o", "p", "q", "r",
-                         "s", "t", "u", "v", "w", "x", "y", "z", "á", "é", "í", "ó", "ú", " ", "\n", "ü", ".", "[", "]"}
+        self.ALPHABET = {
+            "a", "b", "c", "d", "e", "f", "g", "h", "i",
+            "j", "k", "l", "m", "n", "ñ", "o", "p", "q",
+            "r", "s", "t", "u", "v", "w", "x", "y", "z",
+            "á", "é", "í", "ó", "ú", " ", "\n", "ü", ".", "[", "]"
+        }
 
     def normalize_tokens(self, tokenized_sentence: list) -> list:
         lowercase_tokens = self.transform_tokens_to_lowercase(tokenized_sentence)
