@@ -26,8 +26,9 @@ class NormalizerBert(Normalizer):
         return normalized_tokens
 
     def build_normalized_token(self, token: str) -> str:
-        normalized_token = ""
-        for char in token:
-            if char in self.ALPHABET:
-                normalized_token += char
+        normalized_token = ''.join(
+            char for char in token
+            if char in self.ALPHABET
+        )
+
         return normalized_token
