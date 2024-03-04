@@ -8,7 +8,6 @@ class WordSuggesterBert(WordSuggester):
         self.API_URL = os.environ.get('API_URL')
         API_TOKEN = os.environ.get('API_TOKEN')
         self.headers = {"Authorization": f"Bearer {API_TOKEN}"}
-        pass
 
     def suggest_next_word(self, normalized_sentence: str) -> list:
         suggested_words = self.predict_next_word_with_bert(normalized_sentence)
