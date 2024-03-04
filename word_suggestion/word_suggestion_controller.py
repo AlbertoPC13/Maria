@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify, Response
 from .word_suggestion_service import WordSuggestionService
+from http import HTTPStatus
 
 word_suggestion_api = Blueprint('word_suggestion_api', __name__)
 
@@ -8,4 +9,4 @@ word_suggestion_api = Blueprint('word_suggestion_api', __name__)
 def suggest_word(sentence: str) -> tuple[Response, int]:
     service = WordSuggestionService()
     result = service.suggest_next_word(sentence)
-    return jsonify(result), 200
+    return jsonify(result), HTTPStatus.OK
