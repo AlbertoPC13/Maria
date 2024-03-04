@@ -7,8 +7,6 @@ app = Flask(__name__)
 
 if os.path.exists('.env'):
     load_dotenv()
-else:
-    print('.env file not found')
 
 app.register_blueprint(word_suggestion_api, url_prefix='/word_suggestion')
 
