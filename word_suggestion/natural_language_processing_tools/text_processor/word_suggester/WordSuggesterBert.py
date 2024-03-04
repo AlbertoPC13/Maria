@@ -14,11 +14,11 @@ class WordSuggesterBert(WordSuggester):
         return suggested_words
 
     def predict_next_word_with_bert(self, sentence: str) -> list:
-        response_from_bert = self.query_bert_api(sentence)
+        response_from_bert = self.get_predictions_from_bert_api(sentence)
         suggested_words = [(item['token_str'], item['score']) for item in response_from_bert]
         return suggested_words
 
-    def query_bert_api(self, sentence: str) -> list:
+    def get_predictions_from_bert_api(self, sentence: str) -> list:
         input_data = {"inputs": sentence}
         response = requests.post(self.API_URL, headers=self.headers, json=input_data)
         return response.json()
