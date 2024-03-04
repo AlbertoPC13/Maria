@@ -1,15 +1,13 @@
-from word_suggestion.natural_language_processing_tools.text_preprocessing.normalizer.NormalizerBert import \
-    NormalizerBert
-from word_suggestion.natural_language_processing_tools.text_preprocessing.tokenizer.TokenizerNltk import TokenizerNltk
-from word_suggestion.natural_language_processing_tools.text_processor.word_suggester.WordSuggesterBert import \
-    WordSuggesterBert
+from word_suggestion.natural_language_processing_tools.text_preprocessing.normalizer import Normalizer
+from word_suggestion.natural_language_processing_tools.text_preprocessing.tokenizer import Tokenizer
+from word_suggestion.natural_language_processing_tools.text_processor.word_suggester import WordSuggester
 
 
 class WordSuggestionService:
-    def __init__(self):
-        self.tokenizer = TokenizerNltk()
-        self.normalizer = NormalizerBert()
-        self.word_suggester = WordSuggesterBert()
+    def __init__(self, tokenizer: Tokenizer, normalizer: Normalizer, word_suggester: WordSuggester):
+        self.tokenizer = tokenizer
+        self.normalizer = normalizer
+        self.word_suggester = word_suggester
 
     def suggest_next_word(self, sentence: str) -> list:
         normalized_sentence = self.prepare_sentence(sentence)
