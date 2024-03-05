@@ -5,6 +5,7 @@ from .natural_language_processing_tools.text_preprocessing.tokenizer.TokenizerNl
 from .natural_language_processing_tools.text_processor.word_suggester.WordSuggesterBert import WordSuggesterBert
 from .word_suggestion_service import WordSuggestionService
 from http import HTTPStatus
+import logging
 
 word_suggestion_api = Blueprint('word_suggestion_api', __name__)
 
@@ -16,5 +17,7 @@ word_suggester = WordSuggesterBert()
 @word_suggestion_api.route('/<sentence>', methods=['GET'])
 def suggest_word(sentence: str) -> tuple[Response, int]:
     service = WordSuggestionService(tokenizer, normalizer, word_suggester)
+    logging.warning(f"Received request for sentence: {sentence}")
     result = service.suggest_next_word(sentence)
+    logging.warning(f"Returning response: {result}")
     return jsonify(result), HTTPStatus.OK
