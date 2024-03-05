@@ -1,7 +1,6 @@
 from word_suggestion.natural_language_processing_tools.text_preprocessing.normalizer import Normalizer
 from word_suggestion.natural_language_processing_tools.text_preprocessing.tokenizer import Tokenizer
 from word_suggestion.natural_language_processing_tools.text_processor.word_suggester import WordSuggester
-import logging
 
 class WordSuggestionService:
     def __init__(self, tokenizer: Tokenizer, normalizer: Normalizer, word_suggester: WordSuggester):
@@ -15,7 +14,6 @@ class WordSuggestionService:
         return suggested_words
 
     def prepare_sentence(self, sentence: str) -> str:
-        logging.warning(f"Received request for sentence: {sentence}")
         tokenized_sentence = self.tokenizer.tokenize_sentence_by_words(sentence)
         normalized_sentence_tokens = self.normalizer.normalize_tokens(tokenized_sentence)
         normalized_sentence_string = self.recover_sentence_from_tokens(normalized_sentence_tokens)
