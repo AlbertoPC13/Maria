@@ -1,3 +1,5 @@
+import time
+
 import pytest
 from dotenv import load_dotenv
 
@@ -8,20 +10,26 @@ from word_suggestion.natural_language_processing_tools.text_processor.word_sugge
 class TestWordSuggesterBert:
     @pytest.fixture
     def word_suggester_bert(self):
-        return WordSuggesterBert()
+        word_suggester = WordSuggesterBert()
+        time.sleep(1)
+        return word_suggester
 
     @pytest.fixture(autouse=True)
     def load_env_variables(self):
         load_dotenv()
 
-    # TODO: this method returns an error in the response, check why
     # TODO: this suite needs more tests
+    sentences = [
+        "El bosque es un lugar mágico para las [MASK]",
+        "Cuando alguien aprende a programar frecuentemente comete [MASK] fáciles de solucionar"
+    ]
+
+    @pytest.mark.parametrize("sentences", sentences)
     @pytest.mark.word_suggester
-    def test_get_predictions_from_bert_api(self, word_suggester_bert):
-        # Given
-        sentence = "El bosque es un lugar mágico para las"
+    def test_get_predictions_from_bert_api(self, word_suggester_bert, sentences):
+        # Given sentences
         # When
-        predictions = word_suggester_bert.get_predictions_from_bert_api(sentence)
+        predictions = word_suggester_bert.get_predictions_from_bert_api(sentences)
         print(predictions)
         # Then
         assert predictions is not None
