@@ -24,12 +24,13 @@ class NormalizerBert(Normalizer):
         normalized_tokens = []
 
         for token in lowercase_tokens:
-            normalized_token = self.build_normalized_token(token)
-            normalized_tokens.append(normalized_token)
+            normalized_token = self.remove_non_alphabet_characters(token)
+            if len(normalized_token) > 0:
+                normalized_tokens.append(normalized_token)
 
         return normalized_tokens
 
-    def build_normalized_token(self, token: str) -> str:
+    def remove_non_alphabet_characters(self, token: str) -> str:
         normalized_token = ''.join(
             char for char in token
             if char in self.ALPHABET
