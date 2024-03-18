@@ -16,6 +16,7 @@ class TestWordSuggesterBert:
 
     # TODO: this method returns an error in the response, check why
     # TODO: this suite needs more tests
+    @pytest.mark.word_suggester
     def test_get_predictions_from_bert_api(self, word_suggester_bert):
         # Given
         sentence = "El bosque es un lugar mágico para las"
