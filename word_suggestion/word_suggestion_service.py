@@ -2,6 +2,7 @@ from word_suggestion.natural_language_processing_tools.text_preprocessing.normal
 from word_suggestion.natural_language_processing_tools.text_preprocessing.tokenizer import Tokenizer
 from word_suggestion.natural_language_processing_tools.text_processor.word_suggester import WordSuggester
 
+
 class WordSuggestionService:
     def __init__(self, tokenizer: Tokenizer, normalizer: Normalizer, word_suggester: WordSuggester):
         self.tokenizer = tokenizer
