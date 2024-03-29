@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, Response
+from flask import Blueprint, jsonify, Response, request
 
 from .natural_language_processing_tools.text_preprocessing.normalizer.NormalizerBert import NormalizerBert
 from .natural_language_processing_tools.text_preprocessing.tokenizer.TokenizerNltk import TokenizerNltk
@@ -13,8 +13,18 @@ normalizer = NormalizerBert()
 word_suggester = WordSuggesterBert()
 
 
-@word_suggestion_api.route('/<sentence>', methods=['GET'])
-def suggest_word(sentence: str) -> tuple[Response, int]:
-    service = WordSuggestionService(tokenizer, normalizer, word_suggester)
-    result = service.suggest_next_word(sentence)
-    return jsonify(result), HTTPStatus.OK
+@word_suggestion_api.route('', methods=['POST'])
+def suggest_word() -> tuple[Response, int]:
+    if request.is_json:
+        data = request.get_json()
+        text = data.get('text')
+        if text:
+            service = WordSuggestionService(tokenizer, normalizer, word_suggester)
+            result = service.suggest_next_word(text)
+            return jsonify(result), HTTPStatus.OK
+        else:
+            return jsonify(
+                {'error': 'The "text" field is required on the body of the request'}), HTTPStatus.BAD_REQUEST
+    else:
+        return jsonify({'error': 'The request must be on JSON format'}), HTTPStatus.BAD_REQUEST
+
