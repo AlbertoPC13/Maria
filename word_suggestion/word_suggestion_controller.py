@@ -1,10 +1,11 @@
 from flask import Blueprint, jsonify, Response, request
 
-from .natural_language_processing_tools.text_preprocessing.normalizer.NormalizerBert import NormalizerBert
-from .natural_language_processing_tools.text_preprocessing.tokenizer.TokenizerNltk import TokenizerNltk
-from .natural_language_processing_tools.text_processor.word_suggester.WordSuggesterBert import WordSuggesterBert
-from .word_suggestion_service import WordSuggestionService
 from http import HTTPStatus
+
+from natural_language_processing_tools.text_preprocessing.normalizer.NormalizerBert import NormalizerBert
+from natural_language_processing_tools.text_preprocessing.tokenizer.TokenizerNltk import TokenizerNltk
+from natural_language_processing_tools.text_processor.word_suggester.WordSuggesterBert import WordSuggesterBert
+from word_suggestion_service import WordSuggestionService
 
 word_suggestion_api = Blueprint('word_suggestion_api', __name__)
 
