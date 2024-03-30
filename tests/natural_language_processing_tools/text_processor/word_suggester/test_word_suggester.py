@@ -26,6 +26,17 @@ class TestWordSuggesterBert:
 
     @pytest.mark.parametrize("sentences", sentences)
     @pytest.mark.word_suggester
+    def test_suggest_next_word(self, word_suggester_bert, sentences):
+        # Given sentences
+        # When
+        suggested_words_with_scores = word_suggester_bert.suggest_next_word(sentences)
+        # Then
+        assert suggested_words_with_scores is not None
+        assert len(suggested_words_with_scores) > 0
+        assert isinstance(suggested_words_with_scores, list)
+
+    @pytest.mark.parametrize("sentences", sentences)
+    @pytest.mark.word_suggester
     def test_get_predictions_from_bert_api(self, word_suggester_bert, sentences):
         # Given sentences
         # When
