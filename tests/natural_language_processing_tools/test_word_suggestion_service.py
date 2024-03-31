@@ -18,6 +18,37 @@ class TestWordSuggestionService:
         return WordSuggestionService(tokenizer, normalizer, word_suggester)
 
     @pytest.mark.word_suggestion_service
+    def test_suggest_next_word(self, word_suggestion_service, mocker):
+        # Given
+        sentence = "El bosque es un lugar mágico para las"
+        prepared_sentence = "El bosque es un lugar mágico para las [MASK]"
+        expected_suggested_words = [("bosque", "0.44048866629600525"), ("infierno", "0.09329268336296082"),
+                                    ("cielo", "0.07073493301868439"), ("castillo", "0.03358548879623413"),
+                                    (".", "0.019639084115624428")]
+
+        # Mock the prepare_sentence method
+        mock_prepare_sentence = mocker.patch.object(
+            WordSuggestionService,
+            "prepare_sentence",
+            return_value=prepared_sentence
+        )
+
+        # Mock the suggest_next_word method of word_suggester
+        mock_suggest_next_word = mocker.patch.object(
+            WordSuggesterBert,
+            "suggest_next_word",
+            return_value=expected_suggested_words
+        )
+
+        # When
+        suggested_words = word_suggestion_service.suggest_next_word(sentence)
+
+        # Then
+        mock_prepare_sentence.assert_called_once_with(sentence)
+        mock_suggest_next_word.assert_called_once_with(prepared_sentence)
+        assert suggested_words == expected_suggested_words
+
+    @pytest.mark.word_suggestion_service
     def test_prepare_sentence(self, word_suggestion_service):
         # Given
         sentence = "Vivieron felices para234#@  "
