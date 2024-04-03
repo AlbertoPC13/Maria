@@ -6,7 +6,7 @@ This project is a word suggestion microservice module developed for the Prototyp
 
 The word suggestion module consists of a Flask API that receives a text and returns a list of possible next words suggested by Google BERT model in his Spanish version. 
 
-The API has a single endpoint that receives a GET request with a JSON body containing the text that will be concidered as context for the suggested word. The API returns a JSON with a list of suggested words.
+The API has a single endpoint that receives a POST request with a JSON body containing the text that will be concidered as context for the suggested word. The API returns a JSON with a list of suggested words.
 
 ***
 
