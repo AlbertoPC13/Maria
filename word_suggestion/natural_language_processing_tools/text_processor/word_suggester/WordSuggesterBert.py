@@ -21,4 +21,4 @@ class WordSuggesterBert(WordSuggester):
 
     @staticmethod
     def extract_word_scores_from_api_response(response_from_bert):
-        return [(item['token_str'], item['score']) for item in response_from_bert]
+        return [{'word':item['token_str'],'score': item['score']} for item in response_from_bert]
